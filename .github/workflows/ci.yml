@@ -1,0 +1,41 @@
+name: CI
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v2
+
+    - name: Set up Python
+      uses: actions/setup-python@v2
+      with:
+        python-version: '3.x'
+
+    - name: Set up Rust
+      uses: actions-rs/toolchain@v1
+      with:
+        toolchain: stable
+        override: true
+
+    - name: Run Python tests
+      run: |
+        cd path_finder_python
+        python -m venv venv
+        source venv/bin/activate
+        pip install -r requirements.txt
+        pytest
+
+    - name: Run Rust tests
+      run: |
+        cd path_finder_rust
+        cargo test
