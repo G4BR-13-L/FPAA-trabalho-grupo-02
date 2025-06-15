@@ -1,8 +1,8 @@
 #!/bin/bash
 
 
-RUST_DIR=path_finder_rust
-PYTHON_DIR=path_finder_python
+RUST_DIR=flood_fill_rust
+PYTHON_DIR=flood_fill_python
 
 # Função para tratar erros
 handle_error() {

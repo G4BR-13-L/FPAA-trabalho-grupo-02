@@ -4,13 +4,13 @@ FROM python:3.13-slim
 WORKDIR /app
 
 # Copiar apenas os arquivos necessários para instalar dependências primeiro
-COPY path_finder_python/requirements.txt .
+COPY flood_fill_python/requirements.txt .
 
 # Instalar dependências
 RUN pip install --no-cache-dir -r requirements.txt
 
 # Copiar o restante dos arquivos
-COPY path_finder_python/ .
+COPY flood_fill_python/ .
 
 # Comando para executar os testes
 CMD ["pytest"]

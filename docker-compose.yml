@@ -6,7 +6,7 @@ services:
       context: .
       dockerfile: Dockerfile.python
     volumes:
-      - ./path_finder_python:/app
+      - ./flood_fill_python:/app
     working_dir: /app
     networks:
       - test-network
@@ -16,7 +16,7 @@ services:
       context: .
       dockerfile: Dockerfile.rust
     volumes:
-      - ./path_finder_rust:/app
+      - ./flood_fill_rust:/app
     working_dir: /app
     networks:
       - test-network

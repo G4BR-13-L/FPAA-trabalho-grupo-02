@@ -29,7 +29,7 @@ jobs:
 
     - name: Run Python tests
       run: |
-        cd path_finder_python
+        cd flood_fill_python
         python -m venv venv
         source venv/bin/activate
         pip install -r requirements.txt
@@ -37,5 +37,5 @@ jobs:
 
     - name: Run Rust tests
       run: |
-        cd path_finder_rust
+        cd flood_fill_rust
         cargo test

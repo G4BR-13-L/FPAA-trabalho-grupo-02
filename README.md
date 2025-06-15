@@ -47,7 +47,7 @@ O labirinto é explorado em quatro direções (cima, baixo, esquerda, direita), 
 
 ### 1. Acessar o Diretório do Projeto  
 ```bash
-cd path_finder_python
+cd flood_fill_python
 ````
 
 ### 2. Criar e Ativar um Ambiente Virtual Python
@@ -123,13 +123,13 @@ S * 1 0 0
 ├── img
 │   ├── grafo_python.png
 │   └── grafo_rust.png
-├── path_finder_python
+├── flood_fill_python
 │   ├── main.py
 │   ├── __pycache__
 │   ├── requirements.txt
-│   ├── test_path_finder.py
+│   ├── test_flood_fill.py
 │   └── venv
-├── path_finder_rust
+├── flood_fill_rust
 │   ├── Cargo.lock
 │   ├── Cargo.toml
 │   ├── README.md

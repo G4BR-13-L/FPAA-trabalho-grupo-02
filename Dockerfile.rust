@@ -4,12 +4,12 @@ FROM rust:1.85-alpine3.20
 WORKDIR /app
 
 # Copiar os arquivos de manifesto primeiro para aproveitar o cache de construção
-COPY path_finder_rust/Cargo.toml .
-COPY path_finder_rust/Cargo.lock .
+COPY flood_fill_rust/Cargo.toml .
+COPY flood_fill_rust/Cargo.lock .
 
 # Criar diretório src e copiar os arquivos fonte
 RUN mkdir src
-COPY path_finder_rust/src/ ./src/
+COPY flood_fill_rust/src/ ./src/
 
 # Compilar e executar os testes
 CMD ["cargo", "test", "--", "--nocapture"]
