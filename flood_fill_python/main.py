@@ -46,7 +46,7 @@ def plot_grid(grid, title="Grid"):
     import os
 
     grid_np = np.array(grid)
-    cmap = plt.cm.get_cmap('tab10', np.max(grid_np) + 1)
+    cmap = plt.cm.get_cmap('hot', np.max(grid_np) + 1)
 
     fig, ax = plt.subplots()
     ax.matshow(grid_np, cmap=cmap)

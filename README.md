@@ -1,40 +1,52 @@
 
-# FPAA-trabalho-grupo-01 - A* Path Finder
+# FPAA-trabalho-grupo-02 - Flood Fill
+> Mapeamento de Regiões com Obstáculos
 
 ## GRUPO
 - Gabriel Victor Couto Martins de Paula
 - Luís Antônio de Souza e Sousa
 
---- 
+---
 
-# A* Path Finder em Labirinto 2D
+## 📌 Descrição
 
-Este projeto implementa o **Algoritmo A\*** para encontrar o menor caminho entre dois pontos em um labirinto 2D. O algoritmo considera obstáculos, utiliza a **distância de Manhattan como heurística** e garante a solução mais eficiente, se existir.
+Este projeto implementa o **Algoritmo Flood Fill** para identificação e preenchimento automático de **regiões conectadas** em um **terreno 2D**, representado como um grid de células.
+
+O objetivo é simular um sistema de mapeamento inteligente, utilizado por **robôs autônomos**, que precisam identificar áreas navegáveis separadas por obstáculos, preenchendo-as com cores distintas para posterior análise e navegação.
 
 ---
 
-## 🧩 Problema Resolvido
+## 🔍 Problema Resolvido
 
-Dado um labirinto 2D representado como uma matriz com células livres (`0`), obstáculos (`1`), um ponto de início (`S`) e um ponto final (`E`), o objetivo é encontrar o caminho mais curto entre `S` e `E` utilizando o Algoritmo A\*.
+Dado um grid 2D onde:
 
-Se não houver caminho possível, o programa retorna `"Nenhum caminho encontrado"`.
+- `0` representa **espaço livre** (navegável)
+- `1` representa **obstáculos** (paredes, barreiras)
+- `2, 3, 4,...` representam **regiões já preenchidas**
+
+O algoritmo deve:
+
+1. Identificar a **região conectada** à partir de uma **posição inicial (x, y)**.
+2. Preencher essa região com uma **cor numérica única**.
+3. Repetir o processo para todas as demais regiões livres do grid, utilizando cores incrementais.
+
+O preenchimento respeita obstáculos e apenas considera conexões **ortogonais** (cima, baixo, esquerda, direita).
 
 ---
 
-## 🔍 Funcionamento do Algoritmo A\*
+## 💡 Funcionamento do Algoritmo Flood Fill
 
-O **Algoritmo A\*** é uma estratégia de busca heurística que combina dois fatores:
+O **Flood Fill** é um algoritmo de propagação em **largura** ou **profundidade**, semelhante ao usado em editores gráficos para preencher áreas com uma cor.
 
-- **g(n)**: o custo do caminho percorrido do início até o nó `n`.
-- **h(n)**: a estimativa do custo restante até o destino — neste caso, calculado com **distância de Manhattan**:
+### Etapas:
 
-  \[
-  h(n) = |x_1 - x_2| + |y_1 - y_2|
-  \]
-
-O algoritmo escolhe os caminhos com menor valor total `f(n) = g(n) + h(n)`, priorizando movimentos promissores.
-
-O labirinto é explorado em quatro direções (cima, baixo, esquerda, direita), ignorando obstáculos (`1`).
+1. Começa a partir da célula inicial `(x, y)`.
+2. Verifica se ela é um espaço livre (`0`).
+3. Se for, colore com uma nova cor (ex: `2`) e coloca na fila.
+4. Itera sobre seus vizinhos ortogonais (não diagonais).
+5. Se o vizinho for `0`, colore com a mesma cor e adiciona à fila.
+6. Repete até esvaziar a fila.
+7. Após preencher a primeira região, o algoritmo busca por outros `0`s no grid e repete o processo com cores crescentes.
 
 ---
 
@@ -69,6 +81,11 @@ pip install -r requirements.txt
 python3 main.py
 ```
 
+O resultado será salvo automaticamente como imagens:
+
+* `Entrada.png` — o grid original
+* `Saída.png` — o grid com as regiões preenchidas em cores
+
 ---
 
 ## 🐳 Executar com Docker (Opcional)
@@ -81,63 +98,111 @@ sudo docker compose up --build -d
 
 ---
 
-## ✅ Validações Importantes
+## 📸 Exemplos
 
-* O programa verifica se há um ponto de início `S` e um fim `E`.
-* Caso o caminho seja impossível (devido a obstáculos), o algoritmo retorna: `Nenhum caminho encontrado.`
+### 🧪 Exemplo 1
+
+#### Grid de Entrada:
+
+```
+0 0 1 0 0  
+0 1 1 0 0  
+0 0 1 1 1  
+1 1 0 0 0  
+```
+
+**Coordenada inicial:** `(0, 0)`
+
+#### Grid de Saída:
+
+```
+2 2 1 3 3  
+2 1 1 3 3  
+2 2 1 1 1  
+1 1 4 4 4  
+```
 
 ---
 
-## 💡 Exemplo de Entrada
+### 🧪 Exemplo 2
 
-```python
-labirinto = [
-    ['S', '0', '1', '0', '0'],
-    ['0', '0', '1', '0', '1'],
-    ['1', '0', '1', '0', '0'],
-    ['1', '0', '0', 'E', '1'],
-]
-```
-
-## 🔎 Saída Esperada
+#### Grid de Entrada:
 
 ```
-Labirinto com caminho:
-S * 1 0 0
-0 * 1 0 1
-1 * 1 0 0
-1 * * E 1
+0 1 0 0 1  
+0 1 0 0 1  
+0 1 1 1 1  
+0 0 0 1 0  
 ```
 
+**Coordenada inicial:** `(0, 2)`
+
+#### Grid de Saída:
+
+```
+3 1 2 2 1  
+3 1 2 2 1  
+3 1 1 1 1  
+3 3 3 1 4  
+```
+
+---
+
+## Plot de Imagens
+
+### Entrada:
+
+![](/flood_fill_python/Entrada.png)
+
+### Saida:
+
+![](/flood_fill_python/Saída.png)
+
+## 🧪 Testes Unitários
+
+O arquivo `test_flood_fill.py` contém testes automáticos com `pytest` para validar o algoritmo com diferentes configurações de entrada:
+
+* Grids simples com e sem obstáculos
+* Cenários sem caminho disponível
+* Casos onde a célula inicial já está preenchida
+* Casos com múltiplas regiões desconectadas
+
+### Rodar testes:
+
+```bash
+pytest test_flood_fill.py
+```
 ---
 
 ## 📁 Estrutura do Projeto
 
+```sh
+.  
+├── flood_fill_python  
+│   ├── Entrada.png  
+│   ├── main.py  
+│   ├── mazegen.py  
+│   ├── requirements.txt  
+│   ├── Saída.png  
+│   ├── test_flood_fill.py  
+│   └── venv/  
+├── flood_fill_rust  
+│   └── ...  
+├── docker-compose.yml  
+├── Dockerfile.python  
+├── Dockerfile.rust  
+├── README.md  
+├── pseudocodigo.txt  
+├── test.sh  
 ```
-.
-├── ci_docker.sh
-├── clean_docker.sh
-├── docker-compose.yml
-├── Dockerfile.python
-├── Dockerfile.rust
-├── img
-│   ├── grafo_python.png
-│   └── grafo_rust.png
-├── flood_fill_python
-│   ├── main.py
-│   ├── __pycache__
-│   ├── requirements.txt
-│   ├── test_flood_fill.py
-│   └── venv
-├── flood_fill_rust
-│   ├── Cargo.lock
-│   ├── Cargo.toml
-│   ├── README.md
-│   ├── src
-│   └── target
-├── pseudocodigo.txt
-├── README.md
-├── test.sh
-└── Trabalho em grupo 1 - Valor 10 pontos-1-1.pdf
 
-```
+---
+
+## 📚 Referências
+
+* Algoritmo Flood Fill: [https://en.wikipedia.org/wiki/Flood\_fill](https://en.wikipedia.org/wiki/Flood_fill)
+* Documentação do `matplotlib`: [https://matplotlib.org/stable/](https://matplotlib.org/stable/)
+* `deque` em Python: [https://docs.python.org/3/library/collections.html#collections.deque](https://docs.python.org/3/library/collections.html#collections.deque)
+
+---
+
