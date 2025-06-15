@@ -1,115 +1,90 @@
-import heapq
-from typing import List, Optional, Tuple, Dict, Set
-from dataclasses import dataclass, field
+# main.py
+import matplotlib.pyplot as plt
+import numpy as np
+from collections import deque
+import os
 
 
-@dataclass(order=True, unsafe_hash=True)
-class Pos:
-    x: int
-    y: int
+def flood_fill(grid, x, y, color):
+    n, m = len(grid), len(grid[0])
+    if grid[x][y] != 0:
+        return
+
+    queue = deque()
+    queue.append((x, y))
+    grid[x][y] = color
+
+    directions = [(-1, 0), (1, 0), (0, -1), (0, 1)]
+
+    while queue:
+        cx, cy = queue.popleft()
+        for dx, dy in directions:
+            nx, ny = cx + dx, cy + dy
+            if 0 <= nx < n and 0 <= ny < m and grid[nx][ny] == 0:
+                grid[nx][ny] = color
+                queue.append((nx, ny))
 
 
-@dataclass(order=True)
-class Node:
-    priority: int
-    pos: Pos = field(compare=False)
+def fill_all_regions(grid, start_x, start_y):
+    grid = [row[:] for row in grid]
+    color = 2
+    if grid[start_x][start_y] == 0:
+        flood_fill(grid, start_x, start_y, color)
+        color += 1
+
+    for i in range(len(grid)):
+        for j in range(len(grid[0])):
+            if grid[i][j] == 0:
+                flood_fill(grid, i, j, color)
+                color += 1
+    return grid
+
+def plot_grid(grid, title="Grid"):
+    import matplotlib.pyplot as plt
+    import numpy as np
+    import matplotlib
+    import os
+
+    grid_np = np.array(grid)
+    cmap = plt.cm.get_cmap('tab10', np.max(grid_np) + 1)
+
+    fig, ax = plt.subplots()
+    ax.matshow(grid_np, cmap=cmap)
+
+    n, m = grid_np.shape
+    ax.set_xticks(np.arange(m))
+    ax.set_yticks(np.arange(n))
+    ax.set_xticklabels(range(m))
+    ax.set_yticklabels(range(n))
+    ax.set_xlabel("Colunas")
+    ax.set_ylabel("Linhas")
+    ax.set_title(title)
+    plt.grid(True)
+
+    if matplotlib.get_backend() in ["TkAgg", "QtAgg", "MacOSX"]:
+        plt.show()
+    else:
+        output_file = f"{title}.png"
+        plt.savefig(output_file)
+        print(f"[INFO] Salvou imagem: {output_file}")
+    plt.close(fig)
 
 
-def heuristica(a: Pos, b: Pos) -> int:
-    return abs(a.x - b.x) + abs(a.y - b.y)
-
-
-def encontrar_posicao(labirinto: List[List[str]], alvo: str) -> Optional[Pos]:
-    for x, linha in enumerate(labirinto):
-        for y, celula in enumerate(linha):
-            if celula == alvo:
-                return Pos(x, y)
-    return None
-
-
-def vizinhos_validos(pos: Pos, labirinto: List[List[str]]) -> List[Pos]:
-    vizinhos = []
-    direcoes = [(0, 1), (1, 0), (0, -1), (-1, 0)]
-    linhas = len(labirinto)
-    colunas = len(labirinto[0]) if linhas > 0 else 0
-
-    for dx, dy in direcoes:
-        nx, ny = pos.x + dx, pos.y + dy
-        if 0 <= nx < linhas and 0 <= ny < colunas:
-            if labirinto[nx][ny] != '1':
-                vizinhos.append(Pos(nx, ny))
-
-    print(f"Vizinhos de ({pos.x}, {pos.y}): {[ (v.x, v.y) for v in vizinhos ]}")
-    return vizinhos
-
-
-def reconstruir_caminho(atual: Pos, veio_de: Dict[Pos, Pos]) -> List[Pos]:
-    caminho = [atual]
-    while atual in veio_de:
-        atual = veio_de[atual]
-        caminho.append(atual)
-    caminho.reverse()
-    return caminho
-
-
-def a_estrela(labirinto: List[List[str]]) -> Optional[List[Pos]]:
-    inicio = encontrar_posicao(labirinto, 'S')
-    fim = encontrar_posicao(labirinto, 'E')
-
-    if inicio is None or fim is None:
-        return None
-
-    open_set = []
-    heapq.heappush(open_set, Node(0, inicio))
-
-    g_score: Dict[Pos, int] = {inicio: 0}
-    f_score: Dict[Pos, int] = {inicio: heuristica(inicio, fim)}
-    veio_de: Dict[Pos, Pos] = {}
-
-    while open_set:
-        atual = heapq.heappop(open_set).pos
-        if atual == fim:
-            return reconstruir_caminho(atual, veio_de)
-
-        for vizinho in vizinhos_validos(atual, labirinto):
-            tentativa_g = g_score.get(atual, float('inf')) + 1
-            if tentativa_g < g_score.get(vizinho, float('inf')):
-                veio_de[vizinho] = atual
-                g_score[vizinho] = tentativa_g
-                f = tentativa_g + heuristica(vizinho, fim)
-                f_score[vizinho] = f
-                heapq.heappush(open_set, Node(f, vizinho))
-
-    return None
-
-
-def imprimir_labirinto_com_caminho(labirinto: List[List[str]], caminho: List[Pos]):
-    labirinto_mod = [linha.copy() for linha in labirinto]
-    for pos in caminho:
-        if labirinto_mod[pos.x][pos.y] not in ('S', 'E'):
-            labirinto_mod[pos.x][pos.y] = '*'
-
-    for linha in labirinto_mod:
-        print(' '.join(linha))
 
 
 def main():
-    labirinto = [
-        ['S', '0', '1', '0', '0'],
-        ['0', '0', '1', '0', '1'],
-        ['1', '0', '1', '0', '0'],
-        ['1', '0', '0', 'E', '1'],
+    grid = [
+        [0, 0, 1, 0, 0],
+        [0, 1, 1, 0, 0],
+        [0, 0, 1, 1, 1],
+        [1, 1, 0, 0, 0],
     ]
-
-    caminho = a_estrela(labirinto)
-    if caminho:
-        print("Caminho encontrado:")
-        for pos in caminho:
-            print(f"({pos.x},{pos.y})")
-        print("\nLabirinto com caminho:")
-        imprimir_labirinto_com_caminho(labirinto, caminho)
-    else:
-        print("Nenhum caminho encontrado.")
+    start_x, start_y = 0, 0
+    print("Grid original:")
+    plot_grid(grid, "Entrada")
+    filled = fill_all_regions(grid, start_x, start_y)
+    print("Grid preenchido:")
+    plot_grid(filled, "Saída")
 
 
 if __name__ == "__main__":
