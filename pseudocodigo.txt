@@ -1,78 +1,21 @@
-função AEstrela(labirinto: Matriz 2D):
-    start = encontrarCoordenada('S', labirinto)
-    end = encontrarCoordenada('E', labirinto)
+Função FLOOD_FILL(grid, x_inicial, y_inicial, nova_cor):
+    Se grid[x_inicial][y_inicial] ≠ 0:
+        Retornar  // célula já ocupada ou obstáculo
 
-    // Lista de nós a serem explorados (fila de prioridade)
-    open_set = fila de prioridade
-    open_set.adicionar(start, prioridade = 0)
+    Criar uma fila chamada FILA
+    Inserir (x_inicial, y_inicial) na FILA
+    grid[x_inicial][y_inicial] ← nova_cor
 
-    // Para armazenar o custo do caminho do início até cada célula
-    g_score = mapa com valor padrão infinito
-    g_score[start] = 0
+    Definir DIREÇÕES ← [cima, baixo, esquerda, direita]
+                     ← [(-1, 0), (1, 0), (0, -1), (0, 1)]
 
-    // Para armazenar o total de custo estimado do início até o final passando por cada célula
-    f_score = mapa com valor padrão infinito
-    f_score[start] = heuristica(start, end)
+    Enquanto FILA não estiver vazia:
+        (x, y) ← FILA.remover()
 
-    // Para reconstruir o caminho no final
-    veio_de = mapa vazio
+        Para cada (dx, dy) em DIREÇÕES:
+            nx ← x + dx
+            ny ← y + dy
 
-    enquanto open_set não estiver vazio:
-        atual = nó com menor f_score em open_set
-
-        se atual == end:
-            retorne reconstruirCaminho(veio_de, atual)
-
-        remover atual de open_set
-
-        para cada vizinho em vizinhosVálidos(atual, labirinto):
-            custo_movimento = g_score[atual] + 1  // custo fixo
-
-            se custo_movimento < g_score[vizinho]:
-                veio_de[vizinho] = atual
-                g_score[vizinho] = custo_movimento
-                f_score[vizinho] = custo_movimento + heuristica(vizinho, end)
-
-                se vizinho não está em open_set:
-                    adicionar vizinho em open_set com prioridade f_score[vizinho]
-
-    retornar falha (nenhum caminho encontrado)
-
-
-função heuristica(a, b):
-    return abs(a.x - b.x) + abs(a.y - b.y)
-
-
-função vizinhosVálidos(pos, labirinto):
-    vizinhos = []
-
-    para direção em [(0,1), (1,0), (0,-1), (-1,0)]:  // direita, baixo, esquerda, cima
-        novo_x = pos.x + direção.x
-        novo_y = pos.y + direção.y
-
-        se dentro dos limites do labirinto e labirinto[novo_x][novo_y] != 1:
-            vizinhos.adicionar((novo_x, novo_y))
-
-    retornar vizinhos
-
-função reconstruirCaminho(veio_de, atual):
-    caminho = lista
-    enquanto atual está em veio_de:
-        adicionar atual no início do caminho
-        atual = veio_de[atual]
-    adicionar atual no início do caminho  // adiciona o ponto inicial
-    retornar caminho
-
-função encontrarCoordenada(valor, labirinto):
-    para i de 0 até linhas:
-        para j de 0 até colunas:
-            se labirinto[i][j] == valor:
-                retornar (i, j)
-
-função imprimirLabirintoComCaminho(labirinto, caminho):
-    para cada (x, y) em caminho:
-        se labirinto[x][y] != 'S' e labirinto[x][y] != 'E':
-            labirinto[x][y] = '*'
-
-    para cada linha em labirinto:
-        imprimir linha
+            Se nx e ny estiverem dentro dos limites do grid E grid[nx][ny] = 0:
+                grid[nx][ny] ← nova_cor
+                FILA.inserir((nx, ny))

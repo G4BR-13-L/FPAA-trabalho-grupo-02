@@ -1,11 +1,9 @@
 use std::collections::VecDeque;
 
-//Função principal
 fn flood_fill(grid: &mut Vec<Vec<u32>>, start_x: usize, start_y: usize, color: u32) {
     let n = grid.len();
     let m = grid[0].len();
 
-    // Retorna se a célula de início não for navegável
     if grid[start_x][start_y] != 0 {
         return;
     }
@@ -14,7 +12,6 @@ fn flood_fill(grid: &mut Vec<Vec<u32>>, start_x: usize, start_y: usize, color: u
     queue.push_back((start_x, start_y));
     grid[start_x][start_y] = color;
 
-    // Movimentos ortogonais (cima, baixo, esquerda, direita)
     let directions = [(-1, 0), (1, 0), (0, -1), (0, 1)];
 
     while let Some((x, y)) = queue.pop_front() {
@@ -33,19 +30,16 @@ fn flood_fill(grid: &mut Vec<Vec<u32>>, start_x: usize, start_y: usize, color: u
     }
 }
 
-/// Função principal que processa todo o grid, preenchendo todas as regiões conectadas.
 fn fill_all_regions(mut grid: Vec<Vec<u32>>, start_x: usize, start_y: usize) -> Vec<Vec<u32>> {
     let mut color = 2;
     let n = grid.len();
     let m = grid[0].len();
 
-    // Primeira região a partir do ponto inicial
     if grid[start_x][start_y] == 0 {
         flood_fill(&mut grid, start_x, start_y, color);
         color += 1;
     }
 
-    // Preenche todas as demais regiões não conectadas
     for i in 0..n {
         for j in 0..m {
             if grid[i][j] == 0 {

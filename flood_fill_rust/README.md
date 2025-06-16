@@ -1,15 +1,20 @@
 
-# FPAA-trabalho-grupo-01 - A* Path Finder
+# FPAA-trabalho-grupo-02 - Flood Fill
+> Mapeamento de Regiões com Obstáculos
 
 ## GRUPO
 - Gabriel Victor Couto Martins de Paula
 - Luís Antônio de Souza e Sousa
 
---- 
+---
 
-# A* Path Finder em Labirinto 2D
+## 📌 Descrição
 
-Este projeto implementa o **Algoritmo A\*** para encontrar o menor caminho entre dois pontos em um labirinto 2D. O algoritmo considera obstáculos, utiliza a **distância de Manhattan como heurística** e garante a solução mais eficiente, se existir.
+Este projeto implementa o **Algoritmo Flood Fill** para identificação e preenchimento automático de **regiões conectadas** em um **terreno 2D**, representado como um grid de células.
+
+O objetivo é simular um sistema de mapeamento inteligente, utilizado por **robôs autônomos**, que precisam identificar áreas navegáveis separadas por obstáculos, preenchendo-as com cores distintas para posterior análise e navegação.
+
+---
 
 ## Como Executar o Projeto
 
