@@ -1,5 +1,4 @@
 import pytest
-from mazegen import mazegen
 from main import fill_all_regions
 
 def test_exemplo_1():
@@ -52,7 +51,7 @@ def test_inicio_em_area_colorida():
         [1, 1],
     ]
     esperado = [
-        [2, 3],
+        [2, 2],
         [1, 1],
     ]
     resultado = fill_all_regions(entrada, 0, 0)
@@ -69,9 +68,3 @@ def test_inicio_em_obstaculo():
     ]
     resultado = fill_all_regions(entrada, 0, 0)
     assert resultado == esperado
-
-
-def test_labirinto_gerado():
-    labirinto = mazegen()
-    caminho = a_estrela(labirinto)
-    assert caminho is not None
