@@ -6,15 +6,15 @@ import os
 
 
 def flood_fill(grid, x, y, color):
-    n, m = len(grid), len(grid[0])
-    if grid[x][y] != 0:
+    n, m = len(grid), len(grid[0]) 
+    if grid[x][y] != 0: # Verifica se a posição inicial precisa de preenchimento
         return
 
-    queue = deque()
+    queue = deque() # Usa deque para eficiência em operações FIFO (BFS)
     queue.append((x, y))
     grid[x][y] = color
 
-    directions = [(-1, 0), (1, 0), (0, -1), (0, 1)]
+    directions = [(-1, 0), (1, 0), (0, -1), (0, 1)] # Direções: cima, baixo, esquerda, direita (4-vizinhança)
 
     while queue:
         cx, cy = queue.popleft()
